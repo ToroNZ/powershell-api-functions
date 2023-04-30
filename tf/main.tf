@@ -51,7 +51,7 @@ resource "azurerm_linux_function_app" "web" {
 
   site_config {
     minimum_tls_version         = "1.2"
-    scm_ip_restriction          = "1.2"
+    scm_minimum_tls_version     = "1.2"
     scm_use_main_ip_restriction = true
     http2_enabled               = true
     application_stack {
@@ -81,7 +81,7 @@ resource "azurerm_linux_function_app" "function1" {
 
   site_config {
     minimum_tls_version         = "1.2"
-    scm_ip_restriction          = "1.2"
+    scm_minimum_tls_version     = "1.2"
     scm_use_main_ip_restriction = true
     http2_enabled               = true
     application_stack {
