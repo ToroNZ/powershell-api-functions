@@ -66,7 +66,7 @@ resource "azurerm_linux_function_app" "web" {
 }
 
 resource "azurerm_linux_function_app" "function1" {
-  name                = "demo-linux-psfunction-app"
+  name                = "demo-linux-ps7function-app"
   resource_group_name = var.rgname
   location            = var.location
 
