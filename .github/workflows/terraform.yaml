@@ -1,0 +1,48 @@
+name: Run Terraform
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "tf/**"
+
+defaults:
+  run:
+    working-directory: tf
+
+jobs:
+  deployPROD:
+    name: "Deploy Demo"
+    environment: demo
+    runs-on: ubuntu-latest
+
+    env:
+      TF_IN_AUTOMATION: true
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENTID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTIONID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANTID }}
+      TARGET_ENVIRONMENT: demo
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform init
+        run: terraform init -input=false
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Select environment workspace
+        run: terraform workspace select $TARGET_ENVIRONMENT
+
+      - name: Generate plan
+        run: CLIENTID=${{ secrets.AZURE_CLIENTID }} terraform plan -var-file=tfvars/$TARGET_ENVIRONMENT.tfvars -out=plan.tfplan
+
+      - name: Show plan
+        run: CLIENTID=${{ secrets.AZURE_CLIENTID }} terraform show plan.tfplan
+
+      - name: Apply plan
+        if: github.ref == 'refs/heads/main'
+        run: CLIENTID=${{ secrets.AZURE_CLIENTID }} terraform apply -auto-approve -input=false plan.tfplan
