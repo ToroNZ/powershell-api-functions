@@ -33,7 +33,7 @@ resource "azurerm_service_plan" "demo" {
 }
 
 resource "azurerm_linux_function_app" "web" {
-  name                = "demo-linux-psfunction-app"
+  name                = "demo-linux-jsfunction-app"
   resource_group_name = var.rgname
   location            = var.location
 
