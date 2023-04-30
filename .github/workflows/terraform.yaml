@@ -38,7 +38,7 @@ jobs:
         run: terraform workspace select -or-create $TARGET_ENVIRONMENT
 
       - name: Generate plan
-        run: CLIENTID=${{ secrets.AZURE_CLIENTID }} terraform plan -var-file=tfvars/$TARGET_ENVIRONMENT.tfvars -out=plan.tfplan
+        run: CLIENTID=${{ secrets.AZURE_CLIENTID }} terraform plan -out=plan.tfplan
 
       - name: Show plan
         run: CLIENTID=${{ secrets.AZURE_CLIENTID }} terraform show plan.tfplan
