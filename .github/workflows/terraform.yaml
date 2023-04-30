@@ -35,7 +35,7 @@ jobs:
         run: terraform validate
 
       - name: Select environment workspace
-        run: terraform workspace select $TARGET_ENVIRONMENT
+        run: terraform workspace select -or-create $TARGET_ENVIRONMENT
 
       - name: Generate plan
         run: CLIENTID=${{ secrets.AZURE_CLIENTID }} terraform plan -var-file=tfvars/$TARGET_ENVIRONMENT.tfvars -out=plan.tfplan
