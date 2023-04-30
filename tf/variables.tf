@@ -14,3 +14,7 @@ variable "storage_account_name" {
   type    = string
   default = "demoterraformtfstate"
 }
+
+variable "CLIENTID" {
+  type = string
+}
