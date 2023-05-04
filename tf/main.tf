@@ -31,11 +31,6 @@ resource "azurerm_storage_account" "functions" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
-  network_rules {
-    default_action             = "Deny"
-    bypass                     = ["Logging", "Metrics", "AzureServices"]
-    virtual_network_subnet_ids = [azurerm_subnet.demo.id]
-  }
 }
 
 # Create App Insights for debugging/logging
