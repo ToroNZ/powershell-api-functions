@@ -33,6 +33,7 @@ resource "azurerm_storage_account" "functions" {
 
   network_rules {
     default_action             = "Deny"
+    bypass                     = ["Logging", "Metrics", "AzureServices"]
     virtual_network_subnet_ids = [azurerm_subnet.demo.id]
   }
 }
