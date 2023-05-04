@@ -89,6 +89,8 @@ resource "azurerm_linux_function_app" "web" {
     type = "SystemAssigned"
   }
 
+  depends_on = [azurerm_role_assignment.web]
+
 }
 
 resource "azurerm_linux_function_app" "function1" {
@@ -128,6 +130,8 @@ resource "azurerm_linux_function_app" "function1" {
   identity {
     type = "SystemAssigned"
   }
+
+  depends_on = [azurerm_role_assignment.azurerm_role_assignment.function1]
 
 }
 
