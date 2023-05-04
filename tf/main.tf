@@ -104,8 +104,6 @@ resource "azurerm_linux_function_app" "function1" {
   service_plan_id      = azurerm_service_plan.demo.id
   https_only           = true
 
-  virtual_network_subnet_id = azurerm_subnet.demo.id
-
   auth_settings {
     enabled = false
   }
