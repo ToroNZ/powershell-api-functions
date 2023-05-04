@@ -174,7 +174,7 @@ resource "azurerm_role_assignment" "web" {
 }
 
 resource "azurerm_role_assignment" "function1" {
-  scope                = "/subscriptions/948d4068--xxxx-xxxx-xxxxx-xxxxx/resourceGroups/ansumantest"
+  scope                = azurerm_storage_account.functions.id
   role_definition_name = "Storage Blob Data Reader"
   principal_id         = azurerm_linux_function_app.function1.identity[0].principal_id
 }
