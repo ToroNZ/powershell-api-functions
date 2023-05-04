@@ -61,7 +61,7 @@ resource "azurerm_linux_function_app" "web" {
   resource_group_name = var.rgname
   location            = var.location
 
-  storage_account_name = var.storage_account_name
+  storage_account_name = azurerm_storage_account.functions.name
   service_plan_id      = azurerm_service_plan.demo.id
   https_only           = true
 
@@ -100,7 +100,7 @@ resource "azurerm_linux_function_app" "function1" {
   resource_group_name = var.rgname
   location            = var.location
 
-  storage_account_name = var.storage_account_name
+  storage_account_name = azurerm_storage_account.functions.name
   service_plan_id      = azurerm_service_plan.demo.id
   https_only           = true
 
