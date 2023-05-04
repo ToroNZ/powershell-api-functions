@@ -165,12 +165,12 @@ resource "azurerm_function_app_function" "function1" {
 # Managed identities permissions to read blob
 resource "azurerm_role_assignment" "web" {
   scope                = azurerm_storage_account.functions.id
-  role_definition_name = "Storage Blob Data Reader"
+  role_definition_name = "Storage Account Contributor"
   principal_id         = azurerm_linux_function_app.web.identity[0].principal_id
 }
 
 resource "azurerm_role_assignment" "function1" {
   scope                = azurerm_storage_account.functions.id
-  role_definition_name = "Storage Blob Data Reader"
+  role_definition_name = "Storage Account Contributor"
   principal_id         = azurerm_linux_function_app.function1.identity[0].principal_id
 }
