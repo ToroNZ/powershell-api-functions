@@ -24,7 +24,7 @@ resource "azurerm_subnet" "demo" {
 
 # Storage account to upload the function(s) to
 resource "azurerm_storage_account" "functions" {
-  name                = "functionsdemostgaccount"
+  name                = "gwfunctiondemostgaccount"
   resource_group_name = var.rgname
 
   location                 = var.location
