@@ -24,7 +24,7 @@ resource "azurerm_subnet" "demo" {
 
 # Storage account to upload the function(s) to
 resource "azurerm_storage_account" "functions" {
-  name                = "psfunctionsdemostgaccount"
+  name                = "functionsdemostgaccount"
   resource_group_name = var.rgname
 
   location                 = var.location
@@ -143,7 +143,7 @@ resource "azurerm_function_app_function" "function1" {
   language        = "PowerShell"
   file {
     name    = "pinghost.ps1"
-    content = file("functions/pinghost.ps1")
+    content = file("../functions/pinghost.ps1")
   }
   test_data = jsonencode({
     "host" = "1.1.1.1"
@@ -172,11 +172,11 @@ resource "azurerm_function_app_function" "function1" {
 resource "azurerm_role_assignment" "web" {
   scope                = azurerm_storage_account.functions.id
   role_definition_name = "Storage Blob Data Reader"
-  principal_id         = azurerm_linux_function_app.web.identity.principal_id
+  principal_id         = azurerm_linux_function_app.web.identity[0].principal_id
 }
 
 resource "azurerm_role_assignment" "function1" {
   scope                = "/subscriptions/948d4068--xxxx-xxxx-xxxxx-xxxxx/resourceGroups/ansumantest"
   role_definition_name = "Storage Blob Data Reader"
-  principal_id         = azurerm_linux_function_app.function1.identity.principal_id
+  principal_id         = azurerm_linux_function_app.function1.identity[0].principal_id
 }
