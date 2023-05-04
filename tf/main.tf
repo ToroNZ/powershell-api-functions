@@ -86,7 +86,8 @@ resource "azurerm_linux_function_app" "web" {
   }
 
   identity {
-    type = "SystemAssigned"
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.web.id]
   }
 
   depends_on = [azurerm_role_assignment.web]
@@ -128,10 +129,11 @@ resource "azurerm_linux_function_app" "function1" {
   }
 
   identity {
-    type = "SystemAssigned"
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.function1.id]
   }
 
-  depends_on = [azurerm_role_assignment.azurerm_role_assignment.function1]
+  depends_on = [azurerm_role_assignment.function1]
 
 }
 
@@ -166,15 +168,27 @@ resource "azurerm_function_app_function" "function1" {
   })
 }
 
-# Managed identities permissions to read blob
+# Manage identities permissions to read blob
+resource "azurerm_user_assigned_identity" "web" {
+  location            = var.location
+  name                = "web"
+  resource_group_name = var.rgname
+}
+
+resource "azurerm_user_assigned_identity" "function1" {
+  location            = var.location
+  name                = "function1"
+  resource_group_name = var.rgname
+}
+
 resource "azurerm_role_assignment" "web" {
   scope                = azurerm_storage_account.functions.id
   role_definition_name = "Storage Account Contributor"
-  principal_id         = azurerm_linux_function_app.web.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.web.principal_id
 }
 
 resource "azurerm_role_assignment" "function1" {
   scope                = azurerm_storage_account.functions.id
   role_definition_name = "Storage Account Contributor"
-  principal_id         = azurerm_linux_function_app.function1.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.function1.principal_id
 }
