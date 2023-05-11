@@ -13,3 +13,8 @@ variable "rgname" {
 variable "CLIENTID" {
   type = string
 }
+
+variable "frontend_code" {
+  type    = string
+  default = "../functions/frontend"
+}

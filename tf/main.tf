@@ -34,9 +34,12 @@ resource "azurerm_linux_function_app" "web" {
   }
 
   app_settings = {
-    FUNCTIONS_WORKER_RUNTIME         = "Python"
-    FUNCTIONS_WORKER_RUNTIME_VERSION = "~3"
-    WEBSITE_RUN_FROM_PACKAGE         = 0
+    WEBSITE_RUN_FROM_PACKAGE            = azurerm_storage_blob.frontend_blob.url,
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
+    WEBSITES_MOUNT_ENABLED              = 1
+    FUNCTIONS_WORKER_RUNTIME            = "python"
+    FUNCTIONS_WORKER_RUNTIME_VERSION    = "~3"
+    AzureWebJobsStorage                 = "DefaultEndpointsProtocol=https;AccountName=${azurerm_storage_account.storage_account.name};AccountKey=${azurerm_storage_account.storage_account.primary_access_key}"
   }
 
   site_config {
@@ -120,35 +123,7 @@ resource "azurerm_function_app_function" "web" {
   name            = "demo-frontend1-app"
   function_app_id = azurerm_linux_function_app.web.id
   language        = "Python"
-  file {
-    name    = "__init__.py"
-    content = <<EOT
-import logging
 
-import azure.functions as func
-
-
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
-
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
-
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
-        return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
-        )
-EOT
-  }
   config_json = jsonencode({
     "bindings" = [
       {
@@ -157,7 +132,7 @@ EOT
         "methods" = [
           "get"
         ]
-        "name" = "req"
+        "name" = "Request"
         "type" = "httpTrigger"
       },
       {
