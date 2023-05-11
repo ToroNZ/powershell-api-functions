@@ -46,7 +46,7 @@ resource "azurerm_windows_function_app" "web" {
     scm_use_main_ip_restriction = true
     http2_enabled               = true
     application_stack {
-      node_version = "18"
+      python_version = "3.9"
     }
   }
 
