@@ -12,11 +12,11 @@ resource "azurerm_service_plan" "demo" {
   name                = "demo-app-service-plan"
   resource_group_name = var.rgname
   location            = var.location
-  os_type             = "Windows"
+  os_type             = "Linux"
   sku_name            = "Y1" # Consumption based SKU
 }
 
-resource "azurerm_windows_function_app" "web" {
+resource "azurerm_linux_function_app" "web" {
   name                = "demo-linux-frontend-app"
   resource_group_name = var.rgname
   location            = var.location
@@ -59,7 +59,7 @@ resource "azurerm_windows_function_app" "web" {
 
 }
 
-resource "azurerm_windows_function_app" "function1" {
+resource "azurerm_linux_function_app" "function1" {
   name                = "demo-linux-backend-app"
   resource_group_name = var.rgname
   location            = var.location
@@ -89,7 +89,7 @@ resource "azurerm_windows_function_app" "function1" {
     }
 
     cors {
-      allowed_origins = ["${azurerm_windows_function_app.web.default_hostname}"]
+      allowed_origins = ["${azurerm_linux_function_app.web.default_hostname}"]
     }
     ip_restriction {
       action                    = "Allow"
@@ -100,7 +100,7 @@ resource "azurerm_windows_function_app" "function1" {
       ip_address = "202.174.170.183/32"
     }
     dynamic "ip_restriction" {
-      for_each = toset(azurerm_windows_function_app.web.possible_outbound_ip_address_list)
+      for_each = toset(azurerm_linux_function_app.web.possible_outbound_ip_address_list)
       content {
         ip_address = "${ip_restriction.value}/32"
       }
@@ -118,7 +118,7 @@ resource "azurerm_windows_function_app" "function1" {
 
 resource "azurerm_function_app_function" "web" {
   name            = "demo-frontend1-app"
-  function_app_id = azurerm_windows_function_app.web.id
+  function_app_id = azurerm_linux_function_app.web.id
   language        = "Python"
   file {
     name    = "__init__.py"
@@ -171,7 +171,7 @@ EOT
 
 resource "azurerm_function_app_function" "function1" {
   name            = "demo-backend1-app"
-  function_app_id = azurerm_windows_function_app.function1.id
+  function_app_id = azurerm_linux_function_app.function1.id
   language        = "PowerShell"
   file {
     name    = "pinghost.ps1"
