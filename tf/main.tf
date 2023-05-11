@@ -16,7 +16,7 @@ resource "azurerm_service_plan" "demo" {
   sku_name            = "Y1" # Consumption based SKU
 }
 
-resource "azurerm_linux_function_app" "web" {
+resource "azurerm_windows_function_app" "web" {
   name                = "demo-linux-frontend-app"
   resource_group_name = var.rgname
   location            = var.location
@@ -59,7 +59,7 @@ resource "azurerm_linux_function_app" "web" {
 
 }
 
-resource "azurerm_linux_function_app" "function1" {
+resource "azurerm_windows_function_app" "function1" {
   name                = "demo-linux-backend-app"
   resource_group_name = var.rgname
   location            = var.location
@@ -118,7 +118,7 @@ resource "azurerm_linux_function_app" "function1" {
 
 resource "azurerm_function_app_function" "web" {
   name            = "demo-frontend1-app"
-  function_app_id = azurerm_linux_function_app.web.id
+  function_app_id = azurerm_windows_function_app.web.id
   language        = "Python"
   file {
     name    = "__init__.py"
@@ -171,7 +171,7 @@ EOT
 
 resource "azurerm_function_app_function" "function1" {
   name            = "demo-backend1-app"
-  function_app_id = azurerm_linux_function_app.function1.id
+  function_app_id = azurerm_windows_function_app.function1.id
   language        = "PowerShell"
   file {
     name    = "pinghost.ps1"
