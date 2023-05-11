@@ -42,7 +42,7 @@ resource "null_resource" "pip" {
   }
 }
 
-resource "azurerm_storage_blob" "storage_blob" {
+resource "azurerm_storage_blob" "frontend_blob" {
   name                   = "functions-${substr(data.archive_file.frontend_function.output_md5, 0, 6)}.zip"
   storage_account_name   = azurerm_storage_account.functions.name
   storage_container_name = azurerm_storage_container.frontend_container.name

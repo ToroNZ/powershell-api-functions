@@ -39,7 +39,7 @@ resource "azurerm_linux_function_app" "web" {
     WEBSITES_MOUNT_ENABLED              = 1
     FUNCTIONS_WORKER_RUNTIME            = "python"
     FUNCTIONS_WORKER_RUNTIME_VERSION    = "~3"
-    AzureWebJobsStorage                 = "DefaultEndpointsProtocol=https;AccountName=${azurerm_storage_account.storage_account.name};AccountKey=${azurerm_storage_account.storage_account.primary_access_key}"
+    AzureWebJobsStorage                 = "DefaultEndpointsProtocol=https;AccountName=${azurerm_storage_account.functions.name};AccountKey=${azurerm_storage_account.functions.primary_access_key}"
   }
 
   site_config {
