@@ -36,6 +36,7 @@ resource "azurerm_linux_function_app" "web" {
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME         = "Python"
     FUNCTIONS_WORKER_RUNTIME_VERSION = "~3"
+    WEBSITE_RUN_FROM_PACKAGE         = 0
   }
 
   site_config {
