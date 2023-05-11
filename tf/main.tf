@@ -17,7 +17,7 @@ resource "azurerm_service_plan" "demo" {
 }
 
 resource "azurerm_linux_function_app" "web" {
-  name                = "demo-linux-jsfunction-app"
+  name                = "demo-linux-frontend-app"
   resource_group_name = var.rgname
   location            = var.location
 
@@ -34,8 +34,8 @@ resource "azurerm_linux_function_app" "web" {
   }
 
   app_settings = {
-    FUNCTIONS_WORKER_RUNTIME         = "node"
-    FUNCTIONS_WORKER_RUNTIME_VERSION = "~18"
+    FUNCTIONS_WORKER_RUNTIME         = "Python"
+    FUNCTIONS_WORKER_RUNTIME_VERSION = "~3"
   }
 
   site_config {
@@ -59,7 +59,7 @@ resource "azurerm_linux_function_app" "web" {
 }
 
 resource "azurerm_linux_function_app" "function1" {
-  name                = "demo-linux-ps7function-app"
+  name                = "demo-linux-backend-app"
   resource_group_name = var.rgname
   location            = var.location
 
@@ -115,8 +115,61 @@ resource "azurerm_linux_function_app" "function1" {
 
 }
 
+resource "azurerm_function_app_function" "web" {
+  name            = "demo-frontend1-app"
+  function_app_id = azurerm_linux_function_app.web.id
+  language        = "Python"
+  file {
+    name    = "__init__.py"
+    content = <<EOT
+import logging
+
+import azure.functions as func
+
+
+def main(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a request.')
+
+    name = req.params.get('name')
+    if not name:
+        try:
+            req_body = req.get_json()
+        except ValueError:
+            pass
+        else:
+            name = req_body.get('name')
+
+    if name:
+        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
+    else:
+        return func.HttpResponse(
+             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
+             status_code=200
+        )
+EOT
+  }
+  config_json = jsonencode({
+    "bindings" = [
+      {
+        "authLevel" = "function"
+        "direction" = "in"
+        "methods" = [
+          "get"
+        ]
+        "name" = "req"
+        "type" = "httpTrigger"
+      },
+      {
+        "direction" = "out"
+        "name"      = "$return"
+        "type"      = "http"
+      },
+    ]
+  })
+}
+
 resource "azurerm_function_app_function" "function1" {
-  name            = "demo-ps7function-app"
+  name            = "demo-backend1-app"
   function_app_id = azurerm_linux_function_app.function1.id
   language        = "PowerShell"
   file {
@@ -133,37 +186,6 @@ resource "azurerm_function_app_function" "function1" {
         "direction" = "in"
         "methods" = [
           "post",
-        ]
-        "name" = "req"
-        "type" = "httpTrigger"
-      },
-      {
-        "direction" = "out"
-        "name"      = "$return"
-        "type"      = "http"
-      },
-    ]
-  })
-}
-
-resource "azurerm_function_app_function" "web" {
-  name            = "demo-jsfunction-app"
-  function_app_id = azurerm_linux_function_app.web.id
-  language        = "Javascript"
-  file {
-    name    = "index.js"
-    content = file("../functions/frontend/index.js")
-  }
-  test_data = jsonencode({
-    "name" = "Tomas"
-  })
-  config_json = jsonencode({
-    "bindings" = [
-      {
-        "authLevel" = "function"
-        "direction" = "in"
-        "methods" = [
-          "get"
         ]
         "name" = "req"
         "type" = "httpTrigger"
