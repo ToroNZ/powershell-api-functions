@@ -12,7 +12,7 @@ resource "azurerm_service_plan" "demo" {
   name                = "demo-app-service-plan"
   resource_group_name = var.rgname
   location            = var.location
-  os_type             = "Linux"
+  os_type             = "Windows"
   sku_name            = "Y1" # Consumption based SKU
 }
 
@@ -89,7 +89,7 @@ resource "azurerm_windows_function_app" "function1" {
     }
 
     cors {
-      allowed_origins = ["${azurerm_linux_function_app.web.default_hostname}"]
+      allowed_origins = ["${azurerm_windows_function_app.web.default_hostname}"]
     }
     ip_restriction {
       action                    = "Allow"
@@ -100,7 +100,7 @@ resource "azurerm_windows_function_app" "function1" {
       ip_address = "202.174.170.183/32"
     }
     dynamic "ip_restriction" {
-      for_each = toset(azurerm_linux_function_app.web.possible_outbound_ip_address_list)
+      for_each = toset(azurerm_windows_function_app.web.possible_outbound_ip_address_list)
       content {
         ip_address = "${ip_restriction.value}/32"
       }
