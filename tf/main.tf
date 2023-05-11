@@ -17,7 +17,7 @@ resource "azurerm_service_plan" "demo" {
 }
 
 resource "azurerm_linux_function_app" "web" {
-  name                = "demo-linux-frontend-app"
+  name                = "demo-frontend-app"
   resource_group_name = var.rgname
   location            = var.location
 
@@ -60,7 +60,7 @@ resource "azurerm_linux_function_app" "web" {
 }
 
 resource "azurerm_linux_function_app" "function1" {
-  name                = "demo-linux-backend-app"
+  name                = "demo-backend-app"
   resource_group_name = var.rgname
   location            = var.location
 
