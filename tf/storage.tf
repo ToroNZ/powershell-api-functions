@@ -1,3 +1,10 @@
+# Time sleep resource
+resource "time_sleep" "wait_for_stgaccount" {
+  create_duration = "10s"
+
+  depends_on = [azurerm_storage_account.functions]
+}
+
 # Storage account to upload the function(s) to
 resource "azurerm_storage_account" "functions" {
   name                = "gwfunctiondemostgaccount"
@@ -22,7 +29,7 @@ resource "azurerm_storage_container" "frontend_container" {
   name                 = "frontend-function"
   storage_account_name = azurerm_storage_account.functions.name
 
-  depends_on = [azurerm_storage_account.functions]
+  depends_on = [azurerm_storage_account.functions, time_sleep.wait_for_stgaccount]
 }
 
 # Upload function for frontend
@@ -60,5 +67,5 @@ resource "azurerm_storage_container" "backend_container" {
   name                 = "backend-function"
   storage_account_name = azurerm_storage_account.functions.name
 
-  depends_on = [azurerm_storage_account.functions]
+  depends_on = [azurerm_storage_account.functions, time_sleep.wait_for_stgaccount]
 }
