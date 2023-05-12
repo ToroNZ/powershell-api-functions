@@ -10,7 +10,7 @@ resource "azurerm_storage_account" "functions" {
   min_tls_version           = "TLS1_2"
 
   network_rules {
-    default_action = "Allow"
+    default_action = "Deny"
     ip_rules       = [var.PUBLIC_IP]
     bypass         = ["Metrics", "Logging", "AzureServices"]
   }
