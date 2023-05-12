@@ -28,6 +28,11 @@ jobs:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
 
+      - name: Get SNAT -input
+        run: |
+          PUBLIC_IP=$(curl -Ls icanhazip.com)
+          echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
+
       - name: Terraform init
         run: terraform init -input=false
 
@@ -38,11 +43,14 @@ jobs:
         run: terraform workspace select -or-create $TARGET_ENVIRONMENT
 
       - name: Generate plan
-        run: TF_VAR_CLIENTID=${{ secrets.AZURE_CLIENTID }} terraform plan -out=plan.tfplan
+        run:  terraform plan -out=plan.tfplan
+        env:
+          TF_VAR_PUBLIC_IP: ${{ env.PUBLIC_IP }}
+          TF_VAR_CLIENTID: ${{ secrets.AZURE_CLIENTID }}
 
       - name: Show plan
-        run: TF_VAR_CLIENTID=${{ secrets.AZURE_CLIENTID }} terraform show plan.tfplan
+        run: terraform show plan.tfplan
 
       - name: Apply plan
         if: github.ref == 'refs/heads/main'
-        run: CLIENTID=${{ secrets.AZURE_CLIENTID }} terraform apply -auto-approve -input=false plan.tfplan
+        run: terraform apply -auto-approve -input=false plan.tfplan

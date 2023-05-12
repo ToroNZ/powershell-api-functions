@@ -14,6 +14,11 @@ resource "azurerm_storage_account" "functions" {
     bypass         = ["Metrics", "Logging", "AzureServices"]
   }
 
+  network_rules {
+    default_action = "Allow"
+    ip_rules       = [var.PUBLIC_IP]
+  }
+
 }
 
 # Create container for frontend
