@@ -38,6 +38,9 @@ jobs:
 
       - name: Terraform validate
         run: terraform validate
+        env:
+          TF_VAR_PUBLIC_IP: ${{ env.PUBLIC_IP }}
+          TF_VAR_CLIENTID: ${{ secrets.AZURE_CLIENTID }}
 
       - name: Select environment workspace
         run: terraform workspace select -or-create $TARGET_ENVIRONMENT
