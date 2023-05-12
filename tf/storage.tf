@@ -21,6 +21,8 @@ resource "azurerm_storage_account" "functions" {
 resource "azurerm_storage_container" "frontend_container" {
   name                 = "frontend-function"
   storage_account_name = azurerm_storage_account.functions.name
+
+  depends_on = [azurerm_storage_account.functions]
 }
 
 # Upload function for frontend
@@ -57,4 +59,6 @@ resource "azurerm_storage_blob" "frontend_blob" {
 resource "azurerm_storage_container" "backend_container" {
   name                 = "backend-function"
   storage_account_name = azurerm_storage_account.functions.name
+
+  depends_on = [azurerm_storage_account.functions]
 }
